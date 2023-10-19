@@ -21,6 +21,7 @@ public class OperatorGUI extends JFrame {
     private JTextField field_username;
     private JTextField textField1;
     private JPasswordField passwordField1;
+    private JTextField fld_userype;
     private final Operator operator;
     //bir tabloya dinamik olarak yapıları nasıl aktaracağız dbden çekip:
     private DefaultTableModel mdl_userlist; // bir modele ihtiyacımız var bu sebeple burayı oluşturduk. (yukarıda elle yaptk)
