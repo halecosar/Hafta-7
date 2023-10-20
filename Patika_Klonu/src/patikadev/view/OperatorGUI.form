@@ -54,12 +54,7 @@
                       <text value="Ad Soyad"/>
                     </properties>
                   </component>
-                  <vspacer id="c0385">
-                    <constraints>
-                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                  </vspacer>
-                  <component id="afa1b" class="javax.swing.JTextField" binding="field_username">
+                  <component id="afa1b" class="javax.swing.JTextField" binding="fld_name_surname">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -67,15 +62,15 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="feff5" class="javax.swing.JLabel">
+                  <component id="feff5" class="javax.swing.JLabel" binding="field_uname">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Kullanıcı Adıı"/>
+                      <text value="Kullanıcı Adı"/>
                     </properties>
                   </component>
-                  <component id="45d2c" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                  <component id="45d2c" class="javax.swing.JTextField" binding="fld_uname">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -91,7 +86,7 @@
                       <text value="Şifre"/>
                     </properties>
                   </component>
-                  <component id="bc259" class="javax.swing.JPasswordField" binding="passwordField1" default-binding="true">
+                  <component id="bc259" class="javax.swing.JPasswordField" binding="fld_password">
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -99,7 +94,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="94c1e" class="javax.swing.JLabel">
+                  <component id="94c1e" class="javax.swing.JLabel" binding="user">
                     <constraints>
                       <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -107,13 +102,25 @@
                       <text value="Üyelik Tipi"/>
                     </properties>
                   </component>
-                  <component id="39426" class="javax.swing.JTextField" binding="fld_userype">
+                  <component id="f6628" class="javax.swing.JButton" binding="btn_user_add">
                     <constraints>
-                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="-1"/>
-                      </grid>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <text value="Ekle"/>
+                    </properties>
+                  </component>
+                  <component id="b7260" class="javax.swing.JComboBox" binding="cmb_usertype">
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <model>
+                        <item value="operator"/>
+                        <item value="educator"/>
+                        <item value="student"/>
+                      </model>
+                    </properties>
                   </component>
                 </children>
               </grid>
