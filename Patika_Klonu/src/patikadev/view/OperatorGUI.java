@@ -25,6 +25,8 @@ public class OperatorGUI extends JFrame {
     private JComboBox cmb_usertype;
     private JTextField fld_name_surname;
 private JLabel field_uname;
+    private JTextField fld_user_id;
+    private JButton btn_user_delete;
     private final Operator operator;
     //bir tabloya dinamik olarak yapıları nasıl aktaracağız dbden çekip:
     private DefaultTableModel mdl_userlist; // bir modele ihtiyacımız var bu sebeple burayı oluşturduk. (yukarıda elle yaptk)
