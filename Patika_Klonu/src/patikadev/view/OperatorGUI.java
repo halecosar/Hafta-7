@@ -2,6 +2,7 @@ package patikadev.view;
 
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
+import patikadev.model.Course;
 import patikadev.model.Operator;
 import patikadev.model.Patika;
 import patikadev.model.User;
@@ -60,7 +61,7 @@ public class OperatorGUI extends JFrame {
     private Object[] row_patika_list;
     private JPopupMenu patikaMenu;
     private DefaultTableModel mdl_course_list;
-    private Object[] row_course_list;
+    private Object[] row_courseList;
 
     public OperatorGUI(Operator operator) {
         this.operator = operator;
@@ -180,6 +181,16 @@ public class OperatorGUI extends JFrame {
         // ## PatikaList
 
 //CourseLİst başlangıç:
+        mdl_course_list = new DefaultTableModel();
+        Object[] col_courseList = {"ID", "Ders Adı", "Programlama Dili", "Dersin Patikası", "Eğitmen"}; //colonları oluşturduk.
+        mdl_course_list.setColumnIdentifiers(col_courseList);
+        row_courseList = new Object[col_courseList.length]; //satırları oluşturduk
+        loadCourseList();
+
+
+        tbl_course_list.setModel(mdl_course_list);
+        tbl_course_list.getColumnModel().getColumn(0).setMaxWidth(75);
+        tbl_course_list.getTableHeader().setReorderingAllowed(false);
 
 
         btn_user_add.addActionListener(e -> {
@@ -252,6 +263,22 @@ public class OperatorGUI extends JFrame {
             }
 
         });
+    }
+
+    private void loadCourseList() {
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_course_list.getModel();
+        clearModel.setRowCount(0); //tüm rowları sildik.
+        int i = 0;
+        for (Course obj : Course.getList()) {
+            i = 0;
+            row_courseList[i++]= obj.getId();
+            row_courseList[i++]=obj.getName();
+            row_courseList[i++]=obj.getLang();
+            row_courseList[i++]=obj.getPatika().getName();
+            row_courseList[i++]=obj.getEducator().getName();
+            mdl_course_list.addRow(row_courseList);
+
+        }
     }
 
     private void loadPatikaModel() { //her veri aktardığımda modeli tmeizleyip tabloya geri aktaracağız.
