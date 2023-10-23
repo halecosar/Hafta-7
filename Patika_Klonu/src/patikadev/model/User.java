@@ -146,6 +146,7 @@ public class User {
 
         return obj;
     }
+
     public static User getFetch(int id) {
         User obj = null;
         String query = "SELECT * FROM user WHERE id = ?";
@@ -168,12 +169,18 @@ public class User {
 
         return obj;
     }
+
     public static boolean delete(int id) {
         String query = "DELETE FROM user WHERE id = ? ";
+        ArrayList<Course> courseList = Course.getListByUser(id);
+        for (Course c : courseList) {
+            Course.delete(c.getId());
+        }
 
         try {
             PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
             pr.setInt(1, id);
+
             return pr.executeUpdate() != -1;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -184,7 +191,7 @@ public class User {
     public static boolean update(int id, String name, String uname, String pass, String type) {
         String query = "UPDATE user SET name=?,uname=?,pass=?,type=?,id=? ";
         User findUser = User.getFetch(uname);
-        if (findUser != null && findUser.getId()!=id){
+        if (findUser != null && findUser.getId() != id) {
             Helper.showMessage("Bu kullanıcı adı daha önceden eklenmiş. Lütfen farklı bir kullanıcı adı giriniz.");
 
             return false;
@@ -203,6 +210,7 @@ public class User {
         }
         return true;
     }
+
     public static ArrayList<User> SearchuserList(String query) {
         ArrayList<User> userList = new ArrayList<>();
 
@@ -227,16 +235,17 @@ public class User {
         return userList;
     }
 
-        public static String searchQuery(String name, String uname, String type){
-            String query = "SELECT * FROM user WHERE uname LIKE '½{{uname}}½' AND name LIKE '½{{name}}½'";
-            query= query.replace("{{uname}}",uname);
-            query= query.replace("{{name}}",name);
-            if (!type.isEmpty()){
-                query += "AND TYPE= '{{type}}'";
-                query = query.replace("{{type}}",type);
-            }
-            query= query.replace("{{type}}",type);
-            return query;
+    public static String searchQuery(String name, String uname, String type) {
+        String query = "SELECT * FROM user WHERE uname LIKE '%{{uname}}%' AND name LIKE '%{{name}}%'";
+
+        query = query.replace("{{uname}}", uname);
+        query = query.replace("{{name}}", name);
+        if (!type.isEmpty()) {
+            query += "AND TYPE= '{{type}}'";
+            query = query.replace("{{type}}", type);
+        }
+        query = query.replace("{{type}}", type);
+        return query;
 
     }
 }

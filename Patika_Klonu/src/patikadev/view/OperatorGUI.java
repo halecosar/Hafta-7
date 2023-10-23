@@ -121,6 +121,7 @@ public class OperatorGUI extends JFrame {
                 }
                 loadUserModel();
                 loadEducatorCombo();
+                loadCourseModel();
             }
         });
 // ## UserLİst
@@ -141,6 +142,7 @@ public class OperatorGUI extends JFrame {
                 public void windowClosed(WindowEvent e) {
                     loadPatikaModel();
                     loadPatikaCombo();
+                    loadCourseModel();
                 }
             });
 
@@ -152,6 +154,8 @@ public class OperatorGUI extends JFrame {
             if (Patika.delete(select_id)) {
                 Helper.showMessage("done");
                 loadPatikaModel();
+                loadPatikaCombo();
+                loadCourseModel();
             } else {
                 Helper.showMessage("error");
             }
@@ -235,6 +239,7 @@ public class OperatorGUI extends JFrame {
                             Helper.showMessage("done");
                             loadUserModel();
                             loadEducatorCombo();
+                            loadCourseModel();
                             fld_user_id.setText(null);
                         } else {
                             Helper.showMessage("error");
@@ -244,13 +249,18 @@ public class OperatorGUI extends JFrame {
             }
         });
         btn_user_sh.addActionListener(e -> {
+            ArrayList<User> searchingUser;
             String name = fld_sr_username.getText();
             String uname = fld_sr_user_uname.getText();
             String type = cmb_sr_usertype.getSelectedItem().toString();
-            String query = User.searchQuery(name, uname, type);
-
-            ArrayList<User> searchingUser = User.SearchuserList(query);
-            loadUserModel(searchingUser);
+            if (name.isEmpty() && uname.isEmpty() && type.isEmpty()) {
+                searchingUser = User.getList();
+                loadUserModel(searchingUser);
+            } else {
+                String query = User.searchQuery(name, uname, type);
+                searchingUser = User.SearchuserList(query);
+                loadUserModel(searchingUser);
+            }
 
         });
         btn_logout.addActionListener(e -> {
@@ -275,18 +285,16 @@ public class OperatorGUI extends JFrame {
         btn_course_add.addActionListener(e -> {
             Item patikaItem = (Item) cmb_course_patika.getSelectedItem();
             Item userItem = (Item) cmb_course_user.getSelectedItem();
-            if(Helper.isFieldEmpty(fld_course_name)|| Helper.isFieldEmpty(fld_course_lang)){
+            if (Helper.isFieldEmpty(fld_course_name) || Helper.isFieldEmpty(fld_course_lang)) {
                 Helper.showMessage("fill");
-            }
-            else {
-                if (Course.add(userItem.getKey(),patikaItem.getKey(),fld_course_name.getText(),fld_course_lang.getText())){
+            } else {
+                if (Course.add(userItem.getKey(), patikaItem.getKey(), fld_course_name.getText(), fld_course_lang.getText())) {
                     Helper.showMessage("done");
                     loadCourseModel();
                     fld_course_lang.setText(null);
                     fld_course_name.setText(null);
 
-                }
-                else {
+                } else {
                     Helper.showMessage("error");
                 }
 
