@@ -69,6 +69,21 @@ public class Helper { //yardımcı sınıf, içinde static kodlar olacak.
     }
     public static void optionPageTR(){
         UIManager.put("OptionPane.okButtonText","Tamam");
+        UIManager.put("OptionPane.yesButtonText","Evet");
+        UIManager.put("OptionPane.noButtonText","Hayır");
 
+    }
+    public static boolean confirm(String str){
+        optionPageTR();
+        String msg;
+        switch (str){
+            case "sure":
+                msg = "Bu işlemi gerçekleştirmek istediğinize emin misiniz?";
+                break;
+            default:
+                msg= str;
+
+        }
+       return JOptionPane.showConfirmDialog(null,msg,"Son Kararın mı?", JOptionPane.YES_NO_OPTION) == 0;
     }
 }
