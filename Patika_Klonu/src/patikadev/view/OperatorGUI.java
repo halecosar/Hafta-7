@@ -265,6 +265,7 @@ public class OperatorGUI extends JFrame {
         });
         btn_logout.addActionListener(e -> {
             dispose();
+            LoginGUI login = new LoginGUI();
 
         });
         btn_patika_add.addActionListener(e -> {
@@ -394,3 +395,5 @@ public class OperatorGUI extends JFrame {
 
     }
 }
+
+
