@@ -4,7 +4,6 @@ import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
 import patikadev.model.Course;
 import patikadev.model.Educator;
-import patikadev.model.Patika;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,6 +15,19 @@ public class EducatorGUI extends JFrame {
     private JPanel pnl_course_list;
     private JScrollPane scrol_course_list;
     private JTable tbl_course_list;
+    private JPanel pnl_content_list;
+    private JScrollPane scrl_content_list;
+    private JPanel pnl_education_add;
+    private JTable table1;
+    private JButton btn_add_content;
+    private JComboBox cmb_course_list;
+    private JTextField fld_content_title;
+    private JTextField fld_content_caption;
+    private JTextField fld_youtube_link;
+    private JTable tbl_quiz;
+    private JButton btn_question_add;
+    private JComboBox cmb_questions_content;
+    private JTextField fld_quiz_question;
     private Object[] row_courseList;
     private DefaultTableModel mdl_course_list;
     private Educator educator;
