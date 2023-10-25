@@ -128,4 +128,38 @@ public class Content {
         }
         return true;
     }
+    public static boolean update(int id, String name, String description, String link) {
+        String query = "UPDATE content SET name =? ,description=?, link=? WHERE id = ?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setString(1, name);
+            pr.setString(2, description);
+            pr.setString(3, link);
+            pr.setInt(4, id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return true;
+    }
+    public static Content getFetch(int id) {
+        Content obj = null;
+        String query = "SELECT * FROM content WHERE id=?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setInt(1,id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                obj = new Content(rs.getInt("id"),rs.getString("name"),rs.getString("description"),rs.getString("link"),rs.getInt("course_id"));
+
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return obj;
+    }
+
 }

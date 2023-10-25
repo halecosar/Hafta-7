@@ -3,12 +3,16 @@ package patikadev.view;
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
 import patikadev.Helper.Item;
-import patikadev.model.Content;
-import patikadev.model.Course;
-import patikadev.model.Educator;
+import patikadev.model.*;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EducatorGUI extends JFrame {
     private JPanel wrapper;
@@ -35,9 +39,12 @@ public class EducatorGUI extends JFrame {
     private Object[] row_courseList;
     private DefaultTableModel mdl_course_list;
     private DefaultTableModel mdl_content_list;
+    private DefaultTableModel mdl_quiz_list;
+
     private Educator educator;
-    private Content content;
     private Object[] row_content_list;
+    private Object[] row_quiz_list;
+    private JPopupMenu contentMenu;
 
 
     public EducatorGUI(Educator educator){
@@ -74,6 +81,16 @@ public class EducatorGUI extends JFrame {
         tbl_content_list.setModel(mdl_content_list);
         tbl_content_list.getColumnModel().getColumn(0).setMaxWidth(75);
         tbl_content_list.getTableHeader().setReorderingAllowed(false);
+
+        //quiz tanım
+        mdl_quiz_list = new DefaultTableModel();
+        Object[] col_quizList = {"ID", "Ders Adı", "Programlama Dili", "Dersin Patikası", "Eğitmen"}; //colonları oluşturduk.
+        mdl_quiz_list.setColumnIdentifiers(col_quizList);
+        row_quiz_list = new Object[col_quizList.length]; //satırları oluşturduk
+        loadQuestionModel();
+        tbl_quiz.setModel(mdl_quiz_list);
+        tbl_quiz.getColumnModel().getColumn(0).setMaxWidth(75);
+        tbl_quiz.getTableHeader().setReorderingAllowed(false);
 
         tbl_content_list.getSelectionModel().addListSelectionListener(e -> {
             try {
@@ -126,6 +143,33 @@ public class EducatorGUI extends JFrame {
             }
 
         });
+
+        contentMenu = new JPopupMenu();
+        JMenuItem updateMenu = new JMenuItem("Güncelle");
+        contentMenu.add(updateMenu);
+
+        tbl_content_list.setComponentPopupMenu(contentMenu);
+
+        updateMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_content_list.getValueAt(tbl_content_list.getSelectedRow(), 0).toString());
+            UpdateContentGUI updateGUI = new UpdateContentGUI(Content.getFetch(select_id));
+            updateGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                   loadContentModel();
+                }
+            });
+
+        });
+        tbl_content_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selected_row = tbl_content_list.rowAtPoint(point);
+                tbl_content_list.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
+
+            }
+        });
     }
 
     private void loadCourseModel() {
@@ -161,4 +205,24 @@ public class EducatorGUI extends JFrame {
             }
         }
     }
+
+    public void loadQuestionModel(){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_quiz.getModel();
+        clearModel.setRowCount(0); //tüm rowları sildik.
+        int i = 0;
+        for (Course course : Course.getListByUser(this.educator.getId())) {
+            for (Content obj : Content.getListContentByCourse(course.getId())) {
+                i = 0;
+                row_quiz_list[i++] = obj.getId();
+                row_quiz_list[i++] = obj.getName();
+                row_quiz_list[i++] = obj.getDescription();
+                row_quiz_list[i++] = obj.getLink();
+                row_quiz_list[i++] = obj.getCourse().getName();
+                mdl_quiz_list.addRow(row_quiz_list);
+
+            }
+        }
+
+    }
+
 }

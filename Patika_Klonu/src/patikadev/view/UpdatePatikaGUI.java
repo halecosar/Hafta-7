@@ -24,6 +24,8 @@ public class UpdatePatikaGUI extends JFrame {
 
 
         fld_patika_name.setText(patika.getName());
+
+
         btn_update.addActionListener(e -> {
             if (Helper.isFieldEmpty(fld_patika_name)){
                 Helper.showMessage("fill");
