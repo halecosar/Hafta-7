@@ -47,11 +47,11 @@ public class EducatorGUI extends JFrame {
     private JPopupMenu contentMenu;
 
 
-    public EducatorGUI(Educator educator){
-        this.educator=educator;
+    public EducatorGUI(Educator educator) {
+        this.educator = educator;
         add(wrapper);
-        setSize(500,500);
-        setLocation(Helper.screenCenterPoint("x",getSize()), Helper.screenCenterPoint("y",getSize()));
+        setSize(500, 500);
+        setLocation(Helper.screenCenterPoint("x", getSize()), Helper.screenCenterPoint("y", getSize()));
         setVisible(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -84,7 +84,7 @@ public class EducatorGUI extends JFrame {
 
         //quiz tanım
         mdl_quiz_list = new DefaultTableModel();
-        Object[] col_quizList = {"ID", "Ders Adı", "Programlama Dili", "Dersin Patikası", "Eğitmen"}; //colonları oluşturduk.
+        Object[] col_quizList = {"ID", "İçerik Adı", "Quiz Sorusu"}; //colonları oluşturduk.
         mdl_quiz_list.setColumnIdentifiers(col_quizList);
         row_quiz_list = new Object[col_quizList.length]; //satırları oluşturduk
         loadQuestionModel();
@@ -104,14 +104,13 @@ public class EducatorGUI extends JFrame {
         });
 
 
-
         btn_add_content.addActionListener(e -> {
             Item courseItem = (Item) cmb_course_list.getSelectedItem();
 
             if (Helper.isFieldEmpty(fld_content_title) || Helper.isFieldEmpty(fld_content_caption) || Helper.isFieldEmpty(fld_youtube_link)) {
                 Helper.showMessage("fill");
             } else {
-                if (Content.add(fld_content_title.getText(), fld_content_caption.getText(),fld_youtube_link.getText(), courseItem.getKey())) {
+                if (Content.add(fld_content_title.getText(), fld_content_caption.getText(), fld_youtube_link.getText(), courseItem.getKey())) {
                     Helper.showMessage("done");
                     loadContentModel();
                     fld_content_caption.setText(null);
@@ -156,7 +155,7 @@ public class EducatorGUI extends JFrame {
             updateGUI.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
-                   loadContentModel();
+                    loadContentModel();
                 }
             });
 
@@ -188,7 +187,8 @@ public class EducatorGUI extends JFrame {
             cmb_course_list.addItem(new Item(obj.getId(), obj.getName()));
         }
     }
-    public void loadContentModel(){
+
+    public void loadContentModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_content_list.getModel();
         clearModel.setRowCount(0); //tüm rowları sildik.
         int i = 0;
@@ -206,19 +206,19 @@ public class EducatorGUI extends JFrame {
         }
     }
 
-    public void loadQuestionModel(){
+    public void loadQuestionModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_quiz.getModel();
         clearModel.setRowCount(0); //tüm rowları sildik.
         int i = 0;
         for (Course course : Course.getListByUser(this.educator.getId())) {
-            for (Content obj : Content.getListContentByCourse(course.getId())) {
-                i = 0;
-                row_quiz_list[i++] = obj.getId();
-                row_quiz_list[i++] = obj.getName();
-                row_quiz_list[i++] = obj.getDescription();
-                row_quiz_list[i++] = obj.getLink();
-                row_quiz_list[i++] = obj.getCourse().getName();
-                mdl_quiz_list.addRow(row_quiz_list);
+            for (Content content : Content.getListContentByCourse(course.getId())) {
+                for (Quiz obj : Quiz.getListQuizByContent(content.getId())) {
+                    i = 0;
+                    row_quiz_list[i++] = obj.getId();
+                    row_quiz_list[i++] = obj.getContent().getName();
+                    row_quiz_list[i++] = obj.getQuestion();
+                    mdl_quiz_list.addRow(row_quiz_list);
+                }
 
             }
         }
