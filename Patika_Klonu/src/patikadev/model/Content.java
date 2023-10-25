@@ -27,6 +27,10 @@ public class Content {
         this.course= Course.getFetch(course_id);
     }
 
+    public Content(){
+
+    }
+
     public int getId() {
         return id;
     }
@@ -166,6 +170,42 @@ public class Content {
         }
 
         return obj;
+    }
+
+    public static String searchQuery(String name, int courseId) {
+
+        String query = "SELECT * FROM content WHERE name LIKE '%{{name}}%' AND course_id LIKE '%{{course_id}}%'";
+
+        query = query.replace("{{name}}", name);
+        query = query.replace("{{course_id}}", String.valueOf(courseId));
+
+        return query;
+
+    }
+
+    public static ArrayList<Content> SearchContentList(String query) {
+        ArrayList<Content> contentList = new ArrayList<>();
+
+        Content obj;
+        try {
+            Statement st = DBconnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                obj = new Content();
+                obj.setId(rs.getInt("id"));
+                obj.setName(rs.getString("name"));
+                obj.setDescription(rs.getString("description"));
+                obj.setLink(rs.getString("link"));
+                obj.setCourse_id(rs.getInt("course_id"));
+                obj.setCourse(Course.getFetch(rs.getInt("course_id")));
+                contentList.add(obj);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return contentList;
     }
 
 }

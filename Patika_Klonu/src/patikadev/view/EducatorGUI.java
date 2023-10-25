@@ -6,10 +6,10 @@ import patikadev.Helper.Item;
 import patikadev.model.*;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class EducatorGUI extends JFrame {
     private JPanel wrapper;
@@ -34,6 +34,9 @@ public class EducatorGUI extends JFrame {
     private JButton btn_delete;
     private JTextField fld_content_id;
     private JPanel pnl_quiz_list;
+    private JTextField src_content_title;
+    private JComboBox src_cmb_course;
+    private JButton src_btn;
     private Object[] row_courseList;
     private DefaultTableModel mdl_course_list;
     private DefaultTableModel mdl_content_list;
@@ -48,7 +51,7 @@ public class EducatorGUI extends JFrame {
     public EducatorGUI(Educator educator) {
         this.educator = educator;
         add(wrapper);
-        setSize(500, 500);
+        setSize(600, 600);
         setLocation(Helper.screenCenterPoint("x", getSize()), Helper.screenCenterPoint("y", getSize()));
         setVisible(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -188,12 +191,26 @@ public class EducatorGUI extends JFrame {
             }
         });
 
+        src_btn.addActionListener(e -> {
+            ArrayList<Content> searchingContent;
+            String name = src_content_title.getText();
+            Item CoursetItem = (Item) src_cmb_course.getSelectedItem();
+            int courseId = CoursetItem.getKey();
+
+
+            String query = Content.searchQuery(name, courseId);
+            searchingContent = Content.SearchContentList(query);
+            loadContentModelforSearch(searchingContent);
+
+
+        });
     }
 
     private void loadCourseModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_course_list.getModel();
         clearModel.setRowCount(0); //tüm rowları sildik.
         cmb_course_list.removeAllItems();
+        src_cmb_course.removeAllItems();
         int i = 0;
         for (Course obj : Course.getListByUser(this.educator.getId())) {
             i = 0;
@@ -204,6 +221,7 @@ public class EducatorGUI extends JFrame {
             row_courseList[i++] = obj.getEducator().getName();
             mdl_course_list.addRow(row_courseList);
             cmb_course_list.addItem(new Item(obj.getId(), obj.getName()));
+            src_cmb_course.addItem(new Item(obj.getId(), obj.getName()));
         }
     }
 
@@ -223,6 +241,21 @@ public class EducatorGUI extends JFrame {
                 mdl_content_list.addRow(row_content_list);
                 cmb_questions_content.addItem(new Item(obj.getId(), obj.getName()));
             }
+        }
+    }
+
+    public void loadContentModelforSearch(ArrayList<Content> list) {
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_content_list.getModel(); //eklediğin satır listenin altında gelip eklemedeklerinin gelmemesine yarayan kod.
+        clearModel.setRowCount(0);
+
+        for (Content obj : list) {
+            int i = 0;
+            row_content_list[i++] = obj.getId();
+            row_content_list[i++] = obj.getName();
+            row_content_list[i++] = obj.getDescription();
+            row_content_list[i++] = obj.getLink();
+            row_content_list[i++] = obj.getCourse().getName();
+            mdl_content_list.addRow(row_content_list);
         }
     }
 
