@@ -2,6 +2,7 @@ package patikadev.model;
 
 import patikadev.Helper.DBconnector;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -71,5 +72,34 @@ public class Quiz {
             throwables.printStackTrace();
         }
         return quizList;
+    }
+
+    public static boolean add(String question, int content_id) {
+        String query = "INSERT INTO quiz (question,content_id) VALUES (?,?)";
+        PreparedStatement pr = null;
+        try {
+            pr = DBconnector.getInstance().prepareStatement(query);
+
+            pr.setString(1, question);
+            pr.setInt(2, content_id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
+    }
+
+    public static boolean delete(int id) {
+        String query = "DELETE FROM quiz WHERE id = ? ";
+
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setInt(1, id);
+
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
     }
 }

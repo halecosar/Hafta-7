@@ -9,10 +9,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 public class EducatorGUI extends JFrame {
     private JPanel wrapper;
@@ -36,6 +33,7 @@ public class EducatorGUI extends JFrame {
     private JTextField fld_quiz_question;
     private JButton btn_delete;
     private JTextField fld_content_id;
+    private JPanel pnl_quiz_list;
     private Object[] row_courseList;
     private DefaultTableModel mdl_course_list;
     private DefaultTableModel mdl_content_list;
@@ -134,6 +132,7 @@ public class EducatorGUI extends JFrame {
                         Helper.showMessage("done");
 
                         loadContentModel();
+                        loadQuestionModel();
                         fld_content_id.setText(null);
                     } else {
                         Helper.showMessage("error");
@@ -169,6 +168,26 @@ public class EducatorGUI extends JFrame {
 
             }
         });
+
+        btn_question_add.addActionListener(e -> {
+
+            Item ContentItem = (Item) cmb_questions_content.getSelectedItem();
+
+            if (Helper.isFieldEmpty(fld_quiz_question)) {
+                Helper.showMessage("fill");
+            } else {
+                if (Quiz.add(fld_quiz_question.getText(), ContentItem.getKey())) {
+                    Helper.showMessage("done");
+                    loadQuestionModel();
+                    fld_quiz_question.setText(null);
+
+                } else {
+                    Helper.showMessage("error");
+                }
+
+            }
+        });
+
     }
 
     private void loadCourseModel() {
@@ -191,6 +210,7 @@ public class EducatorGUI extends JFrame {
     public void loadContentModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_content_list.getModel();
         clearModel.setRowCount(0); //tüm rowları sildik.
+        cmb_questions_content.removeAllItems();
         int i = 0;
         for (Course course : Course.getListByUser(this.educator.getId())) {
             for (Content obj : Content.getListContentByCourse(course.getId())) {
@@ -201,7 +221,7 @@ public class EducatorGUI extends JFrame {
                 row_content_list[i++] = obj.getLink();
                 row_content_list[i++] = obj.getCourse().getName();
                 mdl_content_list.addRow(row_content_list);
-
+                cmb_questions_content.addItem(new Item(obj.getId(), obj.getName()));
             }
         }
     }
