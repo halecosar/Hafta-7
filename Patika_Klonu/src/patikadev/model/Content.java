@@ -2,22 +2,30 @@ package patikadev.model;
 
 import patikadev.Helper.DBconnector;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Content {
+
+    private int id;
+    private String name;
+    private String description;
+    private String link;
+    private int course_id;
+    private Course course;
+    ArrayList<Content> contentList;
+
     public Content(int id, String name, String description, String link, int course_id) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.link = link;
         this.course_id = course_id;
+        this.course= Course.getFetch(course_id);
     }
-
-    private int id;
-    private String name;
 
     public int getId() {
         return id;
@@ -59,30 +67,65 @@ public class Content {
         this.course_id = course_id;
     }
 
-    private String description;
-    private String link;
-    private int course_id;
+    public Course getCourse() {
+        return course;
+    }
 
-    public static ArrayList<Course> getListByEducatorCourse(int user_id){
-        ArrayList<Course> courseList= new ArrayList<>();
+    public void setCourse(Course course) {
+        this.course = course;
+    }
 
-        Course obj;
+    public static ArrayList<Content> getListContentByCourse (int course_id){
+        ArrayList<Content> contentList= new ArrayList<>();
+
+        Content obj;
         try {
             Statement st = DBconnector.getInstance().createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM course WHERE user_id=" +user_id);
+            ResultSet rs = st.executeQuery("SELECT * FROM content WHERE course_id=" +course_id);
             while (rs.next()){
                 int id = rs.getInt("id");
-                int userID = rs.getInt("user_id");
-                int patika_id = rs.getInt("patika_id");
                 String name = rs.getString("name");
-                String lang = rs.getString("lang");
-                obj = new Course(id,user_id,patika_id,name,lang);
-                courseList.add(obj);
+                String description = rs.getString("description");
+                String link = rs.getString("link");
+                int courseId = rs.getInt("course_id");
+                obj = new Content(id,name,description,link,courseId);
+                contentList.add(obj);
 
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return courseList;
+        return contentList;
+    }
+    public static boolean add(String name, String description, String link,int course_id){
+        String query = "INSERT INTO content (name,description,link,course_id) VALUES (?,?,?,?)";
+        PreparedStatement pr = null;
+        try {
+            pr = DBconnector.getInstance().prepareStatement(query);
+
+            pr.setString(1,name);
+            pr.setString(2,description);
+            pr.setString(3,link);
+            pr.setInt(4,course_id);
+            return pr.executeUpdate()!=-1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+        return true;
+    }
+
+    public static boolean delete(int id) {
+        String query = "DELETE FROM content WHERE id = ? ";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setInt(1, id);
+
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
     }
 }

@@ -302,6 +302,7 @@ public class OperatorGUI extends JFrame {
             }
 
         });
+
     }
 
     private void loadCourseModel() {

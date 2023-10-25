@@ -82,6 +82,10 @@ public class Course {
         this.educator= User.getFetch(user_id);
     }
 
+    public Course(){
+
+    }
+
     private User educator;
 
     public static ArrayList<Course> getList(){
@@ -159,5 +163,24 @@ public class Course {
             throwables.printStackTrace();
         }
         return true;
+    }
+
+    public static Course getFetch(int id) {
+        Course obj = null;
+        String query = "SELECT * FROM course WHERE id = ?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setInt(1, id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                obj = new Course();
+                obj.setId(rs.getInt("id"));
+                obj.setName(rs.getString("name"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return obj;
     }
 }
