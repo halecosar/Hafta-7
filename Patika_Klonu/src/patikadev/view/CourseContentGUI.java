@@ -7,8 +7,8 @@ import patikadev.model.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 
 public class CourseContentGUI extends JFrame {
     private JPanel wrapper;
@@ -21,6 +21,7 @@ public class CourseContentGUI extends JFrame {
 
     private DefaultTableModel mdl_course_content_list;
     private Object[] row_course_content_list;
+    private JPopupMenu quizMenu;
     Course course;
     Student student;
 
@@ -74,6 +75,35 @@ public class CourseContentGUI extends JFrame {
             }
 
         });
+
+        quizMenu = new JPopupMenu();
+        JMenuItem quizlistmenu = new JMenuItem("Quizlere git");
+        quizMenu.add(quizlistmenu);
+
+        tbl_mycontent.setComponentPopupMenu(quizMenu);
+
+        tbl_mycontent.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selected_row = tbl_mycontent.rowAtPoint(point);
+                tbl_mycontent.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
+            }
+        });
+
+        quizlistmenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_mycontent.getValueAt(tbl_mycontent.getSelectedRow(), 0).toString());
+           QuizResultGUI quizResultGUI = new QuizResultGUI(Content.getFetch(select_id),this.student);
+            quizResultGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+
+                }
+            });
+
+        });
+
+
     }
 
     private void loadMyCourseContentModel() {
