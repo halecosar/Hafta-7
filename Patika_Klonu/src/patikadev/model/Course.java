@@ -86,6 +86,13 @@ public class Course {
 
     }
 
+    public Course(int id,String name){
+        this.id=id;
+        this.name=name;
+
+    }
+
+
     private User educator;
 
     public static ArrayList<Course> getList(){
@@ -182,5 +189,26 @@ public class Course {
         }
 
         return obj;
+    }
+    public static ArrayList<Course> getCourseListByPatikaID(int patika_id){
+        ArrayList<Course> courseList= new ArrayList<>();
+
+        Course obj;
+        try {
+            Statement st = DBconnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM course WHERE patika_id=" +patika_id);
+            while (rs.next()){
+
+                String name = rs.getString("name");
+                int id= rs.getInt("id");
+
+                obj = new Course(id,name);
+                courseList.add(obj);
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return courseList;
     }
 }

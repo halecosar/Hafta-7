@@ -265,6 +265,9 @@ public class User {
                     case "educator":
                         obj = new Educator();
                         break;
+                    case "student":
+                        obj = new Student();
+                        break;
                     default:
                         obj = new User();
                 }

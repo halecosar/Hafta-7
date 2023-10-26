@@ -21,7 +21,8 @@ public class EducatorGUI extends JFrame {
     private JPanel pnl_content_list;
     private JScrollPane scrl_content_list;
     private JPanel pnl_education_add;
-    private JTable tbl_content_list;
+    private JTable
+            tbl_content_list;
     private JButton btn_add_content;
     private JComboBox cmb_course_list;
     private JTextField fld_content_title;

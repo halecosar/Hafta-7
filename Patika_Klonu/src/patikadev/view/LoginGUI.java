@@ -2,9 +2,7 @@ package patikadev.view;
 
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
-import patikadev.model.Operator;
-import patikadev.model.Educator;
-import patikadev.model.User;
+import patikadev.model.*;
 
 import javax.swing.*;
 
@@ -42,7 +40,7 @@ public class LoginGUI extends JFrame {
                             EducatorGUI edGUI = new EducatorGUI((Educator) u);
                             break;
                         case "student":
-                            StudentGUI stuGUI = new StudentGUI();
+                            StudentGUI stuGUI = new StudentGUI((Student) u);
                             break;
                     }
                     dispose();

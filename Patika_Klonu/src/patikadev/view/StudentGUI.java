@@ -3,12 +3,15 @@ package patikadev.view;
 import patikadev.Helper.Config;
 import patikadev.Helper.DBconnector;
 import patikadev.Helper.Helper;
+import patikadev.model.Content;
+import patikadev.model.Course;
 import patikadev.model.Patika;
+import patikadev.model.Student;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,11 +29,14 @@ public class StudentGUI extends JFrame {
     private JTable tbl_course_list;
     private DefaultTableModel mdl_patika_list;
     private Object[] row_patika_list;
+    private JPopupMenu patikaMenu;
+    private Student student;
 
-    public StudentGUI(){
+    public StudentGUI(Student student) {
+        this.student=student;
         add(wrapper);
-        setSize(400,400);
-        setLocation(Helper.screenCenterPoint("x",getSize()),Helper.screenCenterPoint("y",getSize()));
+        setSize(400, 400);
+        setLocation(Helper.screenCenterPoint("x", getSize()), Helper.screenCenterPoint("y", getSize()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Config.PROJECT_TITLE);
         setVisible(true);
@@ -38,7 +44,7 @@ public class StudentGUI extends JFrame {
 
         btn_logout.addActionListener(e -> {
             dispose();
-            StudentGUI stugui = new StudentGUI();
+            LoginGUI login = new LoginGUI();
         });
 
         mdl_patika_list = new DefaultTableModel();
@@ -50,6 +56,35 @@ public class StudentGUI extends JFrame {
         tbl_patika_list.getColumnModel().getColumn(0).setMaxWidth(75);
         tbl_patika_list.getTableHeader().setReorderingAllowed(false);
 
+        tbl_patika_list.addMouseListener(new MouseAdapter() {
+        });
+
+        patikaMenu = new JPopupMenu();
+        JMenuItem addMenu = new JMenuItem("Derse kayıt ol");
+        patikaMenu.add(addMenu);
+
+        tbl_patika_list.setComponentPopupMenu(patikaMenu);
+
+        addMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString());
+            CourseRegisterGUI courseRegisterGUI = new CourseRegisterGUI(Patika.getFetch(select_id));
+            courseRegisterGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadPatikaModel();
+                }
+            });
+
+        });
+
+        tbl_patika_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selected_row = tbl_patika_list.rowAtPoint(point);
+                tbl_patika_list.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
+            }
+        });
     }
 
     private void loadPatikaModel() { //her veri aktardığımda modeli tmeizleyip tabloya geri aktaracağız.
@@ -64,4 +99,5 @@ public class StudentGUI extends JFrame {
         }
 
     }
+
 }
