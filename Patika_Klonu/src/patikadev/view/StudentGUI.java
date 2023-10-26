@@ -1,10 +1,9 @@
 package patikadev.view;
 
 import patikadev.Helper.Config;
-import patikadev.Helper.DBconnector;
 import patikadev.Helper.Helper;
-import patikadev.model.Content;
 import patikadev.model.Course;
+import patikadev.model.MyCourse;
 import patikadev.model.Patika;
 import patikadev.model.Student;
 
@@ -12,10 +11,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 public class StudentGUI extends JFrame {
     private JPanel wrapper;
@@ -25,10 +20,14 @@ public class StudentGUI extends JFrame {
     private JPanel pnl_course_list;
     private JScrollPane scrl_patika_list;
     private JTable tbl_patika_list;
+    private JTable tbl_mycourse_list;
     private JScrollPane scrl_course_list;
-    private JTable tbl_course_list;
+
     private DefaultTableModel mdl_patika_list;
+    private DefaultTableModel mdl_mycourse_list;
+
     private Object[] row_patika_list;
+   private Object[] row_mycourseList;
     private JPopupMenu patikaMenu;
     private Student student;
 
@@ -56,6 +55,16 @@ public class StudentGUI extends JFrame {
         tbl_patika_list.getColumnModel().getColumn(0).setMaxWidth(75);
         tbl_patika_list.getTableHeader().setReorderingAllowed(false);
 
+        mdl_mycourse_list = new DefaultTableModel();
+        Object[] col_mypatikaList = {"ID", "course_id", "course_name"}; //colonları oluşturduk.
+        mdl_mycourse_list.setColumnIdentifiers(col_mypatikaList);
+        row_mycourseList = new Object[col_mypatikaList.length]; //satırları oluşturduk
+        loadMyCourseModel();
+        tbl_mycourse_list.setModel(mdl_mycourse_list);
+        tbl_mycourse_list.getColumnModel().getColumn(0).setMaxWidth(75);
+        tbl_mycourse_list.getTableHeader().setReorderingAllowed(false);
+
+
         tbl_patika_list.addMouseListener(new MouseAdapter() {
         });
 
@@ -67,7 +76,7 @@ public class StudentGUI extends JFrame {
 
         addMenu.addActionListener(e -> {
             int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString());
-            CourseRegisterGUI courseRegisterGUI = new CourseRegisterGUI(Patika.getFetch(select_id));
+            CourseRegisterGUI courseRegisterGUI = new CourseRegisterGUI(Patika.getFetch(select_id),this.student);
             courseRegisterGUI.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
@@ -96,6 +105,20 @@ public class StudentGUI extends JFrame {
             row_patika_list[i++] = obj.getId();
             row_patika_list[i++] = obj.getName();
             mdl_patika_list.addRow(row_patika_list);
+        }
+
+    }
+    private void loadMyCourseModel() { //her veri aktardığımda modeli tmeizleyip tabloya geri aktaracağız.
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_mycourse_list.getModel();
+        clearModel.setRowCount(0); //sıfırladdık.
+        int i = 0;
+        for (MyCourse obj : MyCourse.getMyCourseListByUser(this.student.getId())) {
+            i = 0;
+            row_mycourseList[i++] = obj.getId();
+            row_mycourseList[i++] = obj.getCourse_id();
+            row_mycourseList[i++] = obj.getCourse().getName();
+
+            mdl_mycourse_list.addRow(row_mycourseList);
         }
 
     }
