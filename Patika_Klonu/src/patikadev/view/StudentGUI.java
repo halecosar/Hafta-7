@@ -29,6 +29,7 @@ public class StudentGUI extends JFrame {
     private Object[] row_patika_list;
    private Object[] row_mycourseList;
     private JPopupMenu patikaMenu;
+    private JPopupMenu CourseMenu;
     private Student student;
 
     public StudentGUI(Student student) {
@@ -94,6 +95,36 @@ public class StudentGUI extends JFrame {
                 tbl_patika_list.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
             }
         });
+
+        //
+        CourseMenu = new JPopupMenu();
+        JMenuItem contentmenu = new JMenuItem("Ders içeriklerine git");
+        CourseMenu.add(contentmenu);
+
+        tbl_mycourse_list.setComponentPopupMenu(CourseMenu);
+
+        tbl_mycourse_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selected_row = tbl_mycourse_list.rowAtPoint(point);
+                tbl_mycourse_list.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
+            }
+        });
+
+        contentmenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_mycourse_list.getValueAt(tbl_mycourse_list.getSelectedRow(), 1).toString());
+            CourseContentGUI courseContentGUI = new CourseContentGUI(Course.getFetch(select_id),this.student);
+            courseContentGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+
+                }
+            });
+
+        });
+        //
+
     }
 
     private void loadPatikaModel() { //her veri aktardığımda modeli tmeizleyip tabloya geri aktaracağız.
