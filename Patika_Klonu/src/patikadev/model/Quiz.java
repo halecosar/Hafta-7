@@ -102,4 +102,59 @@ public class Quiz {
         }
         return true;
     }
+
+    public static boolean update(String question, int id) {
+        String query = "UPDATE quiz SET question =?  WHERE id = ?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setString(1, question);
+            pr.setInt(2, id);
+
+
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public static Quiz getFetch(int id) {
+        Quiz obj = null;
+        String query = "SELECT * FROM quiz WHERE id=?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setInt(1,id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                obj = new Quiz(rs.getInt("id"),rs.getInt("content_id"),rs.getString("question"));
+
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return obj;
+    }
+    public static ArrayList<Quiz> getList() {
+        ArrayList<Quiz> quizList = new ArrayList<>();
+
+        Quiz obj;
+        try {
+            Statement st = DBconnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM quiz");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String question = rs.getString("question");
+                int contentId = rs.getInt("content_id");
+                obj = new Quiz(id, contentId, question);
+                quizList.add(obj);
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return quizList;
+    }
 }

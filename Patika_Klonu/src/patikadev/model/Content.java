@@ -207,5 +207,27 @@ public class Content {
 
         return contentList;
     }
+    public static ArrayList<Content> getList (){
+        ArrayList<Content> contentList= new ArrayList<>();
+
+        Content obj;
+        try {
+            Statement st = DBconnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM content");
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                String link = rs.getString("link");
+                int courseId = rs.getInt("course_id");
+                obj = new Content(id,name,description,link,courseId);
+                contentList.add(obj);
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return contentList;
+    }
 
 }

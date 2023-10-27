@@ -183,6 +183,7 @@ public class Course {
                 obj = new Course();
                 obj.setId(rs.getInt("id"));
                 obj.setName(rs.getString("name"));
+                obj.setLang(rs.getString("lang"));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -210,5 +211,20 @@ public class Course {
             throwables.printStackTrace();
         }
         return courseList;
+    }
+    public static boolean update( String name, String lang,int course_id) {
+        String query = "UPDATE course SET name =? ,lang=?  WHERE id = ?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setString(1, name);
+            pr.setString(2, lang);
+            pr.setInt(3,course_id);
+
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return true;
     }
 }

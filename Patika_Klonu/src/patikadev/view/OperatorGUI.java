@@ -3,10 +3,7 @@ package patikadev.view;
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
 import patikadev.Helper.Item;
-import patikadev.model.Course;
-import patikadev.model.Operator;
-import patikadev.model.Patika;
-import patikadev.model.User;
+import patikadev.model.*;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -54,6 +51,12 @@ public class OperatorGUI extends JFrame {
     private JComboBox cmb_course_patika;
     private JComboBox cmb_course_user;
     private JButton btn_course_add;
+    private JPanel pnl_content_list;
+    private JPanel pnl_quiz_list;
+    private JScrollPane scrl_content_list;
+    private JTable tbl_content_list;
+    private JScrollPane scrl_quiz_list;
+    private JTable tbl_quiz_list;
     private final Operator operator;
     //bir tabloya dinamik olarak yapıları nasıl aktaracağız dbden çekip:
     private DefaultTableModel mdl_userlist; // bir modele ihtiyacımız var bu sebeple burayı oluşturduk. (yukarıda elle yaptk)
@@ -63,6 +66,13 @@ public class OperatorGUI extends JFrame {
     private JPopupMenu patikaMenu;
     private DefaultTableModel mdl_course_list;
     private Object[] row_courseList;
+    private JPopupMenu courseMenu;
+    private DefaultTableModel mdl_content_list;
+    private Object[] row_contentList;
+    private JPopupMenu contentMenu;
+    private JPopupMenu quizMenu;
+    private DefaultTableModel mdl_quiz_list;
+    private Object[] row_quiz_list;
 
     public OperatorGUI(Operator operator) {
         this.operator = operator;
@@ -302,7 +312,137 @@ public class OperatorGUI extends JFrame {
             }
 
         });
+        tbl_course_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //super.mousePressed(e);
+                Point point = e.getPoint();
+                int selected_row = tbl_course_list.rowAtPoint(point);
+                tbl_course_list.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
+            }
+        });
 
+        courseMenu = new JPopupMenu();
+        JMenuItem updateCourseMenu = new JMenuItem("Güncelle");
+        JMenuItem deleteCourseMenu = new JMenuItem("Sil");
+        courseMenu.add(updateCourseMenu);
+        courseMenu.add(deleteCourseMenu);
+
+        tbl_course_list.setComponentPopupMenu(courseMenu);
+
+        updateCourseMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
+            UpdateCourseGUI updateCourseGUI = new UpdateCourseGUI(Course.getFetch(select_id));
+            updateCourseGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+
+                    loadCourseModel();
+                }
+            });
+
+        });
+        deleteCourseMenu.addActionListener(e -> {
+            if (Helper.confirm("sure")) ;
+            int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
+            if (Course.delete(select_id)) {
+                Helper.showMessage("done");
+                loadCourseModel();
+            } else {
+                Helper.showMessage("error");
+            }
+
+        });
+
+        // content-silme güncelleme işlemleri
+        contentMenu = new JPopupMenu();
+        JMenuItem updateContentMenu = new JMenuItem("Güncelle");
+        JMenuItem deleteContentMenu = new JMenuItem("Sil");
+        contentMenu.add(updateContentMenu);
+        contentMenu.add(deleteContentMenu);
+
+        tbl_content_list.setComponentPopupMenu(contentMenu);
+
+        mdl_content_list = new DefaultTableModel();
+        Object[] col_content_list = {"ID", "Name", "Description", "link"};
+        mdl_content_list.setColumnIdentifiers(col_content_list);
+        row_contentList = new Object[col_content_list.length];
+        loadContentModel();
+
+        tbl_content_list.setModel(mdl_content_list); //bu kod sayesinde listede göründü.
+        tbl_content_list.setComponentPopupMenu(contentMenu); //116.satır
+        tbl_content_list.getTableHeader().setReorderingAllowed(false); // başlıkları sürükleyip değiştirmeyi kapattık, sabitler.
+        tbl_content_list.getColumnModel().getColumn(0).setMaxWidth(80); //burada da id kısmına ayrılan alanı daralttık.
+
+        updateContentMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_content_list.getValueAt(tbl_content_list.getSelectedRow(), 0).toString());
+            UpdateContentGUI updateContentGUI = new UpdateContentGUI(Content.getFetch(select_id));
+            updateContentGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+
+                    loadContentModel();
+                }
+            });
+
+        });
+        deleteContentMenu.addActionListener(e -> {
+            if (Helper.confirm("sure")) ;
+            int select_id = Integer.parseInt(tbl_content_list.getValueAt(tbl_content_list.getSelectedRow(), 0).toString());
+            if (Content.delete(select_id)) {
+                Helper.showMessage("done");
+                loadContentModel();
+            } else {
+                Helper.showMessage("error");
+            }
+        });
+
+        //content işlem sonu
+
+        //quiz işlemleri
+        quizMenu = new JPopupMenu();
+        JMenuItem updateQuizMenu = new JMenuItem("Güncelle");
+        JMenuItem deleteQuizMenu = new JMenuItem("Sil");
+        quizMenu.add(updateQuizMenu);
+        quizMenu.add(deleteQuizMenu);
+
+        tbl_quiz_list.setComponentPopupMenu(quizMenu);
+
+        mdl_quiz_list = new DefaultTableModel();
+        Object[] col_quiz_list = {"ID", "Content Name", "Question"};
+        mdl_quiz_list.setColumnIdentifiers(col_quiz_list);
+        row_quiz_list = new Object[col_quiz_list.length];
+        loadQuizModel();
+
+        tbl_quiz_list.setModel(mdl_quiz_list); //bu kod sayesinde listede göründü.
+        tbl_quiz_list.setComponentPopupMenu(quizMenu); //116.satır
+        tbl_quiz_list.getTableHeader().setReorderingAllowed(false); // başlıkları sürükleyip değiştirmeyi kapattık, sabitler.
+        tbl_quiz_list.getColumnModel().getColumn(0).setMaxWidth(80); //burada da id kısmına ayrılan alanı daralttık.
+
+        updateQuizMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_quiz_list.getValueAt(tbl_quiz_list.getSelectedRow(), 0).toString());
+            UpdateQuizGUI updateQuizGUI = new UpdateQuizGUI(Quiz.getFetch(select_id));
+            updateQuizGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+
+                    loadQuizModel();
+                }
+            });
+
+        });
+
+        deleteQuizMenu.addActionListener(e -> {
+            if (Helper.confirm("sure")) ;
+            int select_id = Integer.parseInt(tbl_quiz_list.getValueAt(tbl_quiz_list.getSelectedRow(), 0).toString());
+            if (Quiz.delete(select_id)) {
+                Helper.showMessage("done");
+                loadQuizModel();
+            } else {
+                Helper.showMessage("error");
+            }
+        });
+        // quiz işlemleri sonu
     }
 
     private void loadCourseModel() {
@@ -333,6 +473,35 @@ public class OperatorGUI extends JFrame {
         }
 
     }
+
+    private void loadContentModel() {
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_content_list.getModel();
+        clearModel.setRowCount(0); //tüm rowları sildik.
+        int i = 0;
+        for (Content obj : Content.getList()) {
+            i = 0;
+            row_contentList[i++] = obj.getId();
+            row_contentList[i++] = obj.getName();
+            row_contentList[i++] = obj.getDescription();
+            row_contentList[i++] = obj.getLink();
+            mdl_content_list.addRow(row_contentList);
+
+        }
+    }
+    private void loadQuizModel() {
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_quiz_list.getModel();
+        clearModel.setRowCount(0); //tüm rowları sildik.
+        int i = 0;
+        for (Quiz obj : Quiz.getList()) {
+            i = 0;
+            row_quiz_list[i++] = obj.getId();
+            row_quiz_list[i++] = obj.getContent().getName();
+            row_quiz_list[i++] = obj.getQuestion();
+            mdl_quiz_list.addRow(row_quiz_list);
+
+        }
+    }
+
 
     public void loadUserModel() {
         DefaultTableModel clearModel = (DefaultTableModel) table_userlist.getModel(); //eklediğin satır listenin altında gelip eklemedeklerinin gelmemesine yarayan kod.
