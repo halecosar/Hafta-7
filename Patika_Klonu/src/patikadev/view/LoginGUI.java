@@ -13,6 +13,8 @@ public class LoginGUI extends JFrame {
     private JTextField fld_user_uname;
     private JPasswordField fld_user_pass;
     private JButton btn_login;
+    private JButton btn_signup;
+    private JRadioButton btn_remember;
 
     public LoginGUI() {
         add(wrapper);
@@ -49,10 +51,9 @@ public class LoginGUI extends JFrame {
 
 
         });
-    }
+        btn_signup.addActionListener(e -> {
+            SignUpGUI signUpGUI = new SignUpGUI();
 
-    public static void main(String[] args) {
-        Helper.setLayout();
-        LoginGUI login = new LoginGUI();
+        });
     }
 }

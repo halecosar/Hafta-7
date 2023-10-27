@@ -551,19 +551,6 @@ public class OperatorGUI extends JFrame {
         }
 
     }
-
-    public static void main(String[] args) {
-        Helper.setLayout();
-        Operator op = new Operator();
-        op.setId(1);
-        op.setName("Hale Coşar");
-        op.setPassword("1234");
-        op.setUname("hale");
-        op.setType("operator");
-        OperatorGUI opGUI = new OperatorGUI(op); // hangi sınıftan nesne ürettiysek GUI'ye onu yolladık.
-
-
-    }
 }
 
 

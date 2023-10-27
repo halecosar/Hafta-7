@@ -108,7 +108,6 @@
                     </constraints>
                     <properties>
                       <model>
-                        <item value="operator"/>
                         <item value="educator"/>
                         <item value="student"/>
                       </model>

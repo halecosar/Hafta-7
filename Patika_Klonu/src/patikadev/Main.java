@@ -1,7 +1,9 @@
 package patikadev;
 
+import patikadev.view.LoginGUI;
+
 public class Main {
     public static void main(String[] args){
-        Example ex = new Example();
+        LoginGUI loginGUI = new LoginGUI();
     }
 }

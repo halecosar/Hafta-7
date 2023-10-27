@@ -41,11 +41,4 @@ public class UpdatePatikaGUI extends JFrame {
 
         });
     }
-
-    public static void main(String[] args) {
-        Helper.setLayout();
-        Patika p = new Patika(1, "Frontend");
-        UpdatePatikaGUI up = new UpdatePatikaGUI(p);
-
-    }
 }
