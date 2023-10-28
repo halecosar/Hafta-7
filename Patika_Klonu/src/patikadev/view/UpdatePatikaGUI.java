@@ -2,6 +2,7 @@ package patikadev.view;
 
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
+import patikadev.model.Operator;
 import patikadev.model.Patika;
 
 import javax.swing.*;
@@ -12,9 +13,12 @@ public class UpdatePatikaGUI extends JFrame {
     private JPanel wrapper;
     private JTextField fld_patika_name;
     private JButton btn_update;
+    private JButton btn_back;
     private Patika patika;
+    private Operator operator;
 
-    public UpdatePatikaGUI(Patika patika) {
+    public UpdatePatikaGUI(Patika patika, Operator operator) {
+        this.operator=operator;
         this.patika = patika;
         add(wrapper);
         setSize(300, 150);
@@ -39,6 +43,10 @@ public class UpdatePatikaGUI extends JFrame {
             }
 
 
+        });
+        btn_back.addActionListener(e -> {
+            OperatorGUI operatorGUI= new OperatorGUI(this.operator);
+            dispose();
         });
     }
 }

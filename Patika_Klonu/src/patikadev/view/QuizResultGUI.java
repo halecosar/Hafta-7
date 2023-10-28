@@ -2,30 +2,28 @@ package patikadev.view;
 
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
-import patikadev.Helper.Item;
-import patikadev.model.Content;
-import patikadev.model.Quiz;
-import patikadev.model.QuizResult;
-import patikadev.model.Student;
+import patikadev.model.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class QuizResultGUI extends JFrame{
+public class QuizResultGUI extends JFrame {
     private JPanel wrapper;
     private JTable tbl_quiz;
     private JTextField fld_answer;
     private JButton btn_save;
     private JTextField fld_quiz_id;
+    private JButton btn_back;
     private DefaultTableModel mdl_quiz_list;
     private Object[] row_quiz_list;
     private Content content;
     private Student student;
+    private Course course;
 
-    public QuizResultGUI(Content content, Student student) throws HeadlessException {
+    public QuizResultGUI(Content content, Student student) {
+
         this.content = content;
         this.student = student;
 
@@ -36,6 +34,7 @@ public class QuizResultGUI extends JFrame{
         setTitle(Config.PROJECT_TITLE);
         setVisible(true);
         setResizable(false);
+        Helper.setLayout();
 
         mdl_quiz_list = new DefaultTableModel();
         Object[] col_quizList = {"ID", "content_name", "question"}; //colonları oluşturduk.
@@ -59,11 +58,17 @@ public class QuizResultGUI extends JFrame{
 
         btn_save.addActionListener(e -> {
 
+            if (mdl_quiz_list.getRowCount() == 0) {
+                Helper.showMessage("Bu İçerik İçin Quiz Eklenmemiştir.");
+            }
 
-            if (Helper.isFieldEmpty(fld_answer) ) {
+            if (Helper.isFieldEmpty(fld_answer)) {
                 Helper.showMessage("fill");
+            } else if (Helper.isFieldEmpty(fld_quiz_id)) {
+                Helper.showMessage(" Lütfen Quiz Seçiniz");
+
             } else {
-                if (QuizResult.add(Integer.parseInt(fld_quiz_id.getText()),this.student.getId(), fld_answer.getText())) {
+                if (QuizResult.add(Integer.parseInt(fld_quiz_id.getText()), this.student.getId(), fld_answer.getText())) {
                     Helper.showMessage("done");
                     fld_answer.setText(null);
                     fld_quiz_id.setText(null);
@@ -76,7 +81,12 @@ public class QuizResultGUI extends JFrame{
 
 
         });
+        btn_back.addActionListener(e -> {
+            StudentGUI studentGUI = new StudentGUI(student);
+            dispose();
+        });
     }
+
     private void loadQuizModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_quiz.getModel();
         clearModel.setRowCount(0); //tüm rowları sildik.

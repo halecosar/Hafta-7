@@ -50,6 +50,20 @@ public class EducatorGUI extends JFrame {
 
 
     public EducatorGUI(Educator educator) {
+        for(UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()){
+            if ("Nimbus".equals(info.getName())) {
+                try {
+                    UIManager.setLookAndFeel(info.getClassName());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (UnsupportedLookAndFeelException e) {
+                    throw new RuntimeException(e);
+                }
+            }}
         this.educator = educator;
         add(wrapper);
         setSize(600, 600);
@@ -58,6 +72,8 @@ public class EducatorGUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         setTitle(Config.PROJECT_TITLE);
+        Helper.setLayout();
+
         btn_logout.addActionListener(e -> {
             dispose();
             LoginGUI login = new LoginGUI();

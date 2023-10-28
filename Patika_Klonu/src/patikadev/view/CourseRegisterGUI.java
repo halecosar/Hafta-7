@@ -13,10 +13,26 @@ public class CourseRegisterGUI extends JFrame {
     private JPanel wrapper;
     private JComboBox cmb_select_courses;
     private JButton btn_course_register;
+    private JButton btn_back;
     private Patika patika;
     private Student user;
 
     public CourseRegisterGUI(Patika patika, Student user) {
+        for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                try {
+                    UIManager.setLookAndFeel(info.getClassName());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (UnsupportedLookAndFeelException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         this.user = user;
         this.patika = patika;
         this.wrapper = wrapper;
@@ -32,18 +48,33 @@ public class CourseRegisterGUI extends JFrame {
 
         btn_course_register.addActionListener(e -> {
 
-            Item ContentItem = (Item) cmb_select_courses.getSelectedItem();
+            Item courseItem = (Item) cmb_select_courses.getSelectedItem();
 
-            if (MyCourse.add(this.user.getId(), ContentItem.getKey())) {
-                Helper.showMessage("done");
+            MyCourse myCourse = MyCourse.checkMyCourseByUserID(this.user.getId(), courseItem.getKey());
+            if (myCourse!= null){
+                Helper.showMessage("Bu derse daha önce kayıt oldunuz!");
                 StudentGUI stuGUI = new StudentGUI(this.user);
-            } else {
-                Helper.showMessage("error");
+                dispose();
             }
+            else {
+                if (MyCourse.add(this.user.getId(), courseItem.getKey())) {
+                    Helper.showMessage("done");
+                    StudentGUI stuGUI = new StudentGUI(this.user);
+                    dispose();
+                } else {
+                    Helper.showMessage("error");
+                }
+            }
+
+
 
 
         });
 
+        btn_back.addActionListener(e -> {
+            StudentGUI studentGUI = new StudentGUI(this.user);
+            dispose();
+        });
     }
 
     private void loadCourseModel() {

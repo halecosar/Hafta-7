@@ -3,7 +3,7 @@ package patikadev.view;
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
 import patikadev.model.Course;
-import patikadev.model.Patika;
+import patikadev.model.Operator;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,15 +14,19 @@ public class UpdateCourseGUI extends JFrame {
     private JTextField fld_course_name;
     private JTextField fld_course_lang;
     private JButton btn_update;
+    private JButton btn_back;
     private Course course;
+    private Operator operator;
 
-    public UpdateCourseGUI(Course course) {
+    public UpdateCourseGUI(Course course,Operator operator) {
+        this.operator=operator;
         this.course = course;
         add(wrapper);
         setSize(400, 300);
         setLocation(Helper.screenCenterPoint("x", getSize()), Helper.screenCenterPoint("y", getSize()));
         setTitle(Config.PROJECT_TITLE);
         setVisible(true);
+        Helper.setLayout();
 
         fld_course_name.setText(course.getName());
         fld_course_lang.setText(course.getLang());
@@ -40,5 +44,9 @@ public class UpdateCourseGUI extends JFrame {
 
         });
 
+        btn_back.addActionListener(e -> {
+            OperatorGUI operatorGUI= new OperatorGUI(this.operator);
+            dispose();
+        });
     }
 }

@@ -2,9 +2,6 @@ package patikadev.view;
 
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
-import patikadev.model.Educator;
-import patikadev.model.Operator;
-import patikadev.model.Student;
 import patikadev.model.User;
 
 import javax.swing.*;
@@ -17,16 +14,32 @@ public class SignUpGUI extends JFrame {
     private JTextField fld_username;
     private JPasswordField fld_password;
     private JButton btn_save;
+    private JButton btn_back;
 
     public SignUpGUI() {
+        for(UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()){
+            if ("Nimbus".equals(info.getName())) {
+                try {
+                    UIManager.setLookAndFeel(info.getClassName());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (UnsupportedLookAndFeelException e) {
+                    throw new RuntimeException(e);
+                }
+            }}
+        Helper.setLayout();
         add(wrapper);
-        setSize(500, 500);
+        setSize(350, 450);
         setLocation(Helper.screenCenterPoint("x", getSize()), Helper.screenCenterPoint("y", getSize()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Config.PROJECT_TITLE);
         setResizable(false);
         setVisible(true);
-        Helper.setLayout();
+
 
 
         btn_save.addActionListener(e -> {
@@ -41,6 +54,10 @@ public class SignUpGUI extends JFrame {
             }
 
 
+        });
+        btn_back.addActionListener(e -> {
+            LoginGUI loginGUI=new LoginGUI();
+            dispose();
         });
     }
 

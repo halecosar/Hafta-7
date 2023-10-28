@@ -2,7 +2,6 @@ package patikadev.view;
 
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
-import patikadev.Helper.Item;
 import patikadev.model.*;
 
 import javax.swing.*;
@@ -18,6 +17,7 @@ public class CourseContentGUI extends JFrame {
     private JTextField fld_selected_content;
     private JComboBox cmb_point;
     private JTextField fld_comment;
+    private JButton btn_back;
 
     private DefaultTableModel mdl_course_content_list;
     private Object[] row_course_content_list;
@@ -26,6 +26,7 @@ public class CourseContentGUI extends JFrame {
     Student student;
 
     public CourseContentGUI(Course course, Student student) {
+
         this.student=student;
         this.course = course;
         add(wrapper);
@@ -104,13 +105,19 @@ public class CourseContentGUI extends JFrame {
         });
 
 
+        btn_back.addActionListener(e -> {
+            StudentGUI studentGUI=new StudentGUI(this.student);
+            dispose();
+
+        });
     }
 
     private void loadMyCourseContentModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_mycontent.getModel();
         clearModel.setRowCount(0); //tüm rowları sildik.
         int i = 0;
-        for (Content obj : Content.getListContentByCourse(this.course.getId())) {
+        for (Content obj : Content.getListContentByCourse(
+                this.course.getId())) {
             i = 0;
             row_course_content_list[i++] = obj.getId();
             row_course_content_list[i++] = obj.getName();

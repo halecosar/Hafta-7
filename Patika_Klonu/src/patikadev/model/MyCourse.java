@@ -51,23 +51,24 @@ public class MyCourse {
         this.id = id;
         this.user_id = user_id;
         this.course_id = course_id;
-        this.course=Course.getFetch(course_id);
+        this.course = Course.getFetch(course_id);
     }
 
-    public MyCourse(int id,int course_id){
+    public MyCourse(int id, int course_id) {
         this.id = id;
         this.course_id = course_id;
-        this.course=Course.getFetch(course_id);
+        this.course = Course.getFetch(course_id);
     }
-    public static boolean add(int user_id,int course_id){
+
+    public static boolean add(int user_id, int course_id) {
         String query = "INSERT INTO mycourse (user_id,course_id) VALUES (?,?)";
         PreparedStatement pr = null;
         try {
             pr = DBconnector.getInstance().prepareStatement(query);
-            pr.setInt(1,user_id);
-            pr.setInt(2,course_id);
+            pr.setInt(1, user_id);
+            pr.setInt(2, course_id);
 
-            return pr.executeUpdate()!=-1;
+            return pr.executeUpdate() != -1;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -75,19 +76,20 @@ public class MyCourse {
 
         return true;
     }
-    public static ArrayList<MyCourse> getMyCourseListByUser(int user_id){
-        ArrayList<MyCourse> myCourseList= new ArrayList<>();
+
+    public static ArrayList<MyCourse> getMyCourseListByUser(int user_id) {
+        ArrayList<MyCourse> myCourseList = new ArrayList<>();
 
         MyCourse obj;
         try {
             Statement st = DBconnector.getInstance().createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM mycourse WHERE user_id=" +user_id);
-            while (rs.next()){
+            ResultSet rs = st.executeQuery("SELECT * FROM mycourse WHERE user_id=" + user_id);
+            while (rs.next()) {
 
-                int id= rs.getInt("id");
-                int courseid= rs.getInt("course_id");
+                int id = rs.getInt("id");
+                int courseid = rs.getInt("course_id");
 
-                obj = new MyCourse(id,courseid);
+                obj = new MyCourse(id, courseid);
                 myCourseList.add(obj);
 
             }
@@ -95,5 +97,26 @@ public class MyCourse {
             throwables.printStackTrace();
         }
         return myCourseList;
+    }
+
+    public static MyCourse checkMyCourseByUserID(int user_id, int course_id) {
+        MyCourse obj = null;
+        String query = "SELECT * FROM mycourse WHERE user_id = ? AND course_id=?";
+        try {
+            PreparedStatement pr = DBconnector.getInstance().prepareStatement(query);
+            pr.setInt(1, user_id);
+            pr.setInt(2, course_id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                int courseid = rs.getInt("course_id");
+
+                obj = new MyCourse(id, courseid);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return obj;
     }
 }

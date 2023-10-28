@@ -58,7 +58,7 @@ public class OperatorGUI extends JFrame {
     private JScrollPane scrl_quiz_list;
     private JTable tbl_quiz_list;
     private final Operator operator;
-    //bir tabloya dinamik olarak yapıları nasıl aktaracağız dbden çekip:
+
     private DefaultTableModel mdl_userlist; // bir modele ihtiyacımız var bu sebeple burayı oluşturduk. (yukarıda elle yaptk)
     private Object[] row_userlist;
     private DefaultTableModel mdl_patika_list;
@@ -85,7 +85,7 @@ public class OperatorGUI extends JFrame {
         setVisible(true);
         lbl_welcome.setText("Hoşgeldin : " + operator.getName());
 
-        //UserList
+        //User işlemleri başlangıç.
         mdl_userlist = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -134,10 +134,9 @@ public class OperatorGUI extends JFrame {
                 loadCourseModel();
             }
         });
-// ## UserLİst
+        // User işlemleri sonu.
 
-        //PatikaList başlangıç
-//eklediğin patikaları silebilmek için component.
+        //Patika işlemleri  başlangıç.
         patikaMenu = new JPopupMenu();
         JMenuItem updateMenu = new JMenuItem("Güncelle");
         JMenuItem deleteMenu = new JMenuItem("Sil");
@@ -146,7 +145,7 @@ public class OperatorGUI extends JFrame {
 
         updateMenu.addActionListener(e -> {
             int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString());
-            UpdatePatikaGUI updateGUI = new UpdatePatikaGUI(Patika.getFetch(select_id));
+            UpdatePatikaGUI updateGUI = new UpdatePatikaGUI(Patika.getFetch(select_id),this.operator);
             updateGUI.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
@@ -195,7 +194,7 @@ public class OperatorGUI extends JFrame {
                 tbl_patika_list.setRowSelectionInterval(selected_row, selected_row); // sağ tıkladığın yer seçili geliyor.
             }
         });
-        // ## PatikaList bitti.
+        // Patika işlemleri sonu.
 
         //CourseList başlangıç:
         mdl_course_list = new DefaultTableModel();
@@ -274,9 +273,9 @@ public class OperatorGUI extends JFrame {
 
         });
         btn_logout.addActionListener(e -> {
-            dispose();
-            LoginGUI login = new LoginGUI();
 
+            LoginGUI login = new LoginGUI();
+            dispose();
         });
         btn_patika_add.addActionListener(e -> {
             if (Helper.isFieldEmpty(fld_patika_name)) {
@@ -332,7 +331,7 @@ public class OperatorGUI extends JFrame {
 
         updateCourseMenu.addActionListener(e -> {
             int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
-            UpdateCourseGUI updateCourseGUI = new UpdateCourseGUI(Course.getFetch(select_id));
+            UpdateCourseGUI updateCourseGUI = new UpdateCourseGUI(Course.getFetch(select_id),this.operator);
             updateCourseGUI.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
@@ -354,7 +353,7 @@ public class OperatorGUI extends JFrame {
 
         });
 
-        // content-silme güncelleme işlemleri
+        // İçerik tablosu + ekleme-silme güncelleme işlemleri başlangıç
         contentMenu = new JPopupMenu();
         JMenuItem updateContentMenu = new JMenuItem("Güncelle");
         JMenuItem deleteContentMenu = new JMenuItem("Sil");
@@ -397,9 +396,9 @@ public class OperatorGUI extends JFrame {
             }
         });
 
-        //content işlem sonu
+        // İçerik tablosu + ekleme-silme güncelleme işlemleri sonu.
 
-        //quiz işlemleri
+        //Quiz tablosu + ekleme-silme güncelleme  işlemleri başlangıç.
         quizMenu = new JPopupMenu();
         JMenuItem updateQuizMenu = new JMenuItem("Güncelle");
         JMenuItem deleteQuizMenu = new JMenuItem("Sil");
@@ -442,7 +441,7 @@ public class OperatorGUI extends JFrame {
                 Helper.showMessage("error");
             }
         });
-        // quiz işlemleri sonu
+        //Quiz tablosu + ekleme-silme güncelleme  işlemleri sonu.
     }
 
     private void loadCourseModel() {
@@ -504,7 +503,7 @@ public class OperatorGUI extends JFrame {
 
 
     public void loadUserModel() {
-        DefaultTableModel clearModel = (DefaultTableModel) table_userlist.getModel(); //eklediğin satır listenin altında gelip eklemedeklerinin gelmemesine yarayan kod.
+        DefaultTableModel clearModel = (DefaultTableModel) table_userlist.getModel();
         clearModel.setRowCount(0);
         int i;
 
@@ -520,7 +519,7 @@ public class OperatorGUI extends JFrame {
     }
 
     public void loadUserModel(ArrayList<User> list) {
-        DefaultTableModel clearModel = (DefaultTableModel) table_userlist.getModel(); //eklediğin satır listenin altında gelip eklemedeklerinin gelmemesine yarayan kod.
+        DefaultTableModel clearModel = (DefaultTableModel) table_userlist.getModel(); //eklediğin satırın, listenin altında gelip eklemedeklerinin gelmemesini sağlayan kod.
         clearModel.setRowCount(0);
 
         for (User obj : list) { // veritabanından veri çekip yazdırmanın dinamik yolu.

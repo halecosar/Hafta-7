@@ -3,8 +3,11 @@ package patikadev.view;
 import patikadev.Helper.Config;
 import patikadev.Helper.Helper;
 import patikadev.model.Content;
+import patikadev.model.Operator;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class UpdateContentGUI extends JFrame {
     private Content content;
@@ -42,4 +45,6 @@ public class UpdateContentGUI extends JFrame {
 
         });
     }
+
+
 }

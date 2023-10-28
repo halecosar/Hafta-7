@@ -13,6 +13,11 @@ import java.util.concurrent.RecursiveTask;
 
 public class User {
     private int id;
+    private String name;
+    private String uname;
+    private String password;
+    private String type;
+
 
     public User() {
     }
@@ -65,10 +70,7 @@ public class User {
         this.type = type;
     }
 
-    private String name;
-    private String uname;
-    private String password;
-    private String type;
+
 
     public static ArrayList<User> getList() {
         ArrayList<User> userList = new ArrayList<>();
